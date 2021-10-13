@@ -9,16 +9,16 @@ import { createLogger } from '../utils/logger'
 const XAWS = AWSXRay.captureAWS(AWS);
 const logger = createLogger('todoAccess')
 
-export class TodosAcces {
+export class Access {
 
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
-    private readonly todosTable = process.env.TODOS_TABLE) {
+    private readonly currentTable = process.env.CAPSTONE_TABLE) {
   }
 
-  async getTodoItems(userId: string): Promise<TodoItem[]> {
+  async getItems(userId: string): Promise<TodoItem[]> {
     const result = await this.docClient.query({
-        TableName: this.todosTable,
+        TableName: this.currentTable,
         KeyConditionExpression: 'userId = :userId',
         ExpressionAttributeValues: {
           ':userId': userId
@@ -29,39 +29,39 @@ export class TodosAcces {
      return items as TodoItem[]
   }
 
-  async createTodoItem(todoItem: TodoItem): Promise<TodoItem> {
+  async createItem(newItem: TodoItem): Promise<TodoItem> {
     await this.docClient.put({
-      TableName: this.todosTable,
-      Item: todoItem
+      TableName: this.currentTable,
+      Item: newItem
     }).promise()
 
-    return todoItem
+    return newItem
   }
 
-  async updateTodoItem(todoId: string, userId: string, updatedTodo: TodoUpdate): Promise<TodoUpdate> {
+  async updateItem(todoId: string, userId: string, updatedItem: TodoUpdate): Promise<TodoUpdate> {
     await this.docClient.update({
-      TableName: this.todosTable,
+      TableName: this.currentTable,
       Key: {
         "todoId": todoId,
         "userId": userId
       },
       UpdateExpression: "set #n=:n, dueDate=:dd, done=:d",
       ExpressionAttributeValues: {
-        ":n": updatedTodo.name,
-        ":dd": updatedTodo.dueDate,
-        ":d": updatedTodo.done
+        ":n": updatedItem.name,
+        ":dd": updatedItem.dueDate,
+        ":d": updatedItem.done
       },
       ExpressionAttributeNames: {
         "#n": "name"
       }
     }).promise()
 
-    return updatedTodo
+    return updatedItem
   }
 
-  async deleteTodoItem(todoId: string, userId: string) {
+  async deleteItem(todoId: string, userId: string) {
     await this.docClient.delete({
-      TableName: this.todosTable,
+      TableName: this.currentTable,
       Key: {
         "todoId": todoId,
         "userId": userId

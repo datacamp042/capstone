@@ -1,10 +1,10 @@
 import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
-import { deleteTodo } from '../../businessLogic/todos'
+import { deleteItem } from '../../businessLogic/todos'
 import { createLogger } from '../../utils/logger'
 
-const logger = createLogger('deleteTodo')
+const logger = createLogger('deleteItem')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId
@@ -14,7 +14,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const jwtToken = split[1]
 
   if(!todoId) {
-    logger.info(`could not generate upload url because todoId is missing in the request`);
+    logger.info(`could not generate upload url because ItemID is missing in the request`);
 
     return {
       statusCode: 404,
@@ -26,7 +26,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     };
   }
 
-  await deleteTodo(todoId, jwtToken)
+  await deleteItem(todoId, jwtToken)
 
   return {
     statusCode: 200,
