@@ -1,8 +1,8 @@
 import * as AWS  from 'aws-sdk'
 import * as AWSXRay from 'aws-xray-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
-import { TodoItem } from '../models/TodoItem'
-import { TodoUpdate } from '../models/TodoUpdate'
+import { Item } from '../models/Item'
+import { Update } from '../models/Update'
 import { createLogger } from '../utils/logger'
 
 //const XAWS = require('aws-xray-sdk')
@@ -16,7 +16,7 @@ export class Access {
     private readonly currentTable = process.env.CAPSTONE_TABLE) {
   }
 
-  async getItems(userId: string): Promise<TodoItem[]> {
+  async getItems(userId: string): Promise<Item[]> {
     const result = await this.docClient.query({
         TableName: this.currentTable,
         KeyConditionExpression: 'userId = :userId',
@@ -26,10 +26,10 @@ export class Access {
       }).promise()
 
       const items = result.Items
-     return items as TodoItem[]
+     return items as Item[]
   }
 
-  async createItem(newItem: TodoItem): Promise<TodoItem> {
+  async createItem(newItem: Item): Promise<Item> {
     await this.docClient.put({
       TableName: this.currentTable,
       Item: newItem
@@ -38,7 +38,7 @@ export class Access {
     return newItem
   }
 
-  async updateItem(todoId: string, userId: string, updatedItem: TodoUpdate): Promise<TodoUpdate> {
+  async updateItem(todoId: string, userId: string, updatedItem: Update): Promise<Update> {
     await this.docClient.update({
       TableName: this.currentTable,
       Key: {
