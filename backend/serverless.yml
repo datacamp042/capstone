@@ -31,12 +31,12 @@ custom:
         title: Capstone Project
         description: Serverless application for Capstone Project
     models:
-      - name: CreateTodoRequest
+      - name: CreateRequest
         contentType: application/json
-        schema: ${file(models/create-todo-schema.json)}
-      - name: UpdateTodoRequest
+        schema: ${file(models/create-schema.json)}
+      - name: UpdateRequest
         contentType: application/json
-        schema: ${file(models/update-todo-schema.json)}
+        schema: ${file(models/update-schema.json)}
 
 functions:
 

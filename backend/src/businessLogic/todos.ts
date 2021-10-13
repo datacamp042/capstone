@@ -1,4 +1,3 @@
-// Done
 import { Item } from "../models/Item"
 import { Update } from "../models/Update"
 import * as uuid from 'uuid'
@@ -25,7 +24,7 @@ export async function createItem(
     const userId = parseUserId(jwtToken)
   
     return await newAccess.createItem({
-      todoId: itemId,
+      itemId: itemId,
       userId: userId,
       createdAt: new Date().toISOString(),
       name: CreateNewRequest.name,
@@ -36,21 +35,21 @@ export async function createItem(
 }
 
 export async function updateItem(
-  todoId: string,
-  updatedTodo: UpdateRequest,
+  itemId: string,
+  updatedItem: UpdateRequest,
   jwtToken: string
 ): Promise<Update> {
   const userId = parseUserId(jwtToken)
   
-  return await newAccess.updateItem(todoId, userId, updatedTodo)
+  return await newAccess.updateItem(itemId, userId, updatedItem)
 }
 
-export async function deleteItem(todoId: string, jwtToken: string) {
+export async function deleteItem(itemId: string, jwtToken: string) {
   const userId = parseUserId(jwtToken)
 
-  return await newAccess.deleteItem(todoId, userId)
+  return await newAccess.deleteItem(itemId, userId)
 }
 
-export function generateUploadUrl(todoId: string) : string {
-  return getSignedUploadUrl(todoId)
+export function generateUploadUrl(itemId: string) : string {
+  return getSignedUploadUrl(itemId)
 }
