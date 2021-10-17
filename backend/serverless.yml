@@ -20,7 +20,7 @@ provider:
 
   environment:
     CAPSTONE_TABLE: Capstone-${self:provider.stage}
-    CAPSTONE_CREATED_AT_INDEX: TodoCreatedIndex
+    CAPSTONE_CREATED_AT_INDEX: CreatedIndex
     CAPSTONE_ATTACHEMENT_S3_BUCKET: udacity-capstone-attachments-datacamp042-${self:provider.stage}
 
 custom:
@@ -31,7 +31,7 @@ custom:
         title: Capstone Project
         description: Serverless application for Capstone Project
     models:
-      - name: CreateRequest
+      - name: CreateNewRequest
         contentType: application/json
         schema: ${file(models/create-schema.json)}
       - name: UpdateRequest
@@ -43,12 +43,12 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
-  GetTodos:
+  GetItems:
     handler: src/lambda/http/get.handler
     events:
       - http:
           method: get
-          path: todos
+          path: items
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -57,12 +57,12 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CAPSTONE_TABLE}
 
-  CreateTodo:
+  CreateItem:
     handler: src/lambda/http/create.handler
     events:
       - http:
           method: post
-          path: todos
+          path: items
           cors: true
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
@@ -70,19 +70,19 @@ functions:
             summary: Create a new item
             description: Create a new item
             requestModels:
-              'application/json': CreateTodoRequest
+              'application/json': CreateNewRequest
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CAPSTONE_TABLE}
 
-  UpdateTodo:
+  UpdateItem:
     handler: src/lambda/http/update.handler
     events:
       - http:
           method: patch
-          path: todos/{todoId}
+          path: items/{itemId}
           cors: true
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
@@ -90,7 +90,7 @@ functions:
             summary: Update a item
             description: Update a item
             requestModels:
-              'application/json': UpdateTodoRequest
+              'application/json': UpdateRequest
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -101,12 +101,12 @@ functions:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CAPSTONE_CREATED_AT_INDEX}
 
-  DeleteTodo:
+  DeleteItem:
     handler: src/lambda/http/delete.handler
     events:
       - http:
           method: delete
-          path: todos/{todoId}
+          path: items/{itemId}
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -124,7 +124,7 @@ functions:
     events:
       - http:
           method: post
-          path: todos/{todoId}/attachment
+          path: items/{itemId}/attachment
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -156,20 +156,20 @@ resources:
         ValidateRequestBody: true
         ValidateRequestParameters: false
 
-    TodosTable:
+    ItemsTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
-          - AttributeName: todoId
+          - AttributeName: itemId
             AttributeType: S
           - AttributeName: createdAt
             AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
-          - AttributeName: todoId
+          - AttributeName: itemId
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.CAPSTONE_TABLE}

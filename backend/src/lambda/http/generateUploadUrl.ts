@@ -7,11 +7,11 @@ import { createLogger } from '../../utils/logger';
 const logger = createLogger('generateUploadUrl')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const todoId = event.pathParameters.todoId
+  const itemId = event.pathParameters.itemId
 
-  if(!todoId) {
+  if(!itemId) {
 
-    logger.info(`could not generate upload url because todoId is missing in the request`);
+    logger.info(`could not generate upload url because itemId is missing in the request`);
 
     return {
       statusCode: 404,
@@ -23,7 +23,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     };
   }
   
-  const uploadUrl = generateUploadUrl(todoId)
+  const uploadUrl = generateUploadUrl(itemId)
 
   return {
     statusCode: 200,

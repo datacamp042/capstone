@@ -7,13 +7,13 @@ import { createLogger } from '../../utils/logger'
 const logger = createLogger('deleteItem')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const todoId = event.pathParameters.todoId
+  const itemId = event.pathParameters.itemId
 
   const authorization = event.headers.Authorization
   const split = authorization.split(' ')
   const jwtToken = split[1]
 
-  if(!todoId) {
+  if(!itemId) {
     logger.info(`could not generate upload url because ItemID is missing in the request`);
 
     return {
@@ -22,11 +22,11 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': true
       },
-      body: JSON.stringify({message: "Missing path parameter todoId"})
+      body: JSON.stringify({message: "Missing path parameter itemId"})
     };
   }
 
-  await deleteItem(todoId, jwtToken)
+  await deleteItem(itemId, jwtToken)
 
   return {
     statusCode: 200,

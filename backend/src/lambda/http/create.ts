@@ -10,13 +10,13 @@ const logger = createLogger('createItem')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Processing event: ', event)
-  const newTodo: CreateNewRequest = JSON.parse(event.body)
+  const newEvent: CreateNewRequest = JSON.parse(event.body)
   
   const authorization = event.headers.Authorization
   const split = authorization.split(' ')
   const jwtToken = split[1]
 
-  if(!newTodo.name) {
+  if(!newEvent.name) {
     return {
       statusCode: 400,
       headers: {
@@ -27,7 +27,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
   }
   
-  const newItem = await createItem(newTodo, jwtToken)
+  const newItem = await createItem(newEvent, jwtToken)
 
   return {
     statusCode: 201,

@@ -7,7 +7,7 @@ import { createLogger } from '../utils/logger'
 
 //const XAWS = require('aws-xray-sdk')
 const XAWS = AWSXRay.captureAWS(AWS);
-const logger = createLogger('todoAccess')
+const logger = createLogger('Access')
 
 export class Access {
 
@@ -38,11 +38,11 @@ export class Access {
     return newItem
   }
 
-  async updateItem(todoId: string, userId: string, updatedItem: Update): Promise<Update> {
+  async updateItem(itemId: string, userId: string, updatedItem: Update): Promise<Update> {
     await this.docClient.update({
       TableName: this.currentTable,
       Key: {
-        "todoId": todoId,
+        "itemId": itemId,
         "userId": userId
       },
       UpdateExpression: "set #n=:n, dueDate=:dd, done=:d",
@@ -59,11 +59,11 @@ export class Access {
     return updatedItem
   }
 
-  async deleteItem(todoId: string, userId: string) {
+  async deleteItem(itemId: string, userId: string) {
     await this.docClient.delete({
       TableName: this.currentTable,
       Key: {
-        "todoId": todoId,
+        "itemId": itemId,
         "userId": userId
       }
     }).promise()

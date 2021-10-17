@@ -4,7 +4,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 import { getItemsPerUser } from '../../businessLogic/todos'
 import { createLogger } from '../../utils/logger'
 
-const logger = createLogger('getTodos')
+const logger = createLogger('getItems')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Caller event', event)
@@ -13,7 +13,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const split = authorization.split(' ')
   const jwtToken = split[1]
 
-  const todos = await getItemsPerUser(jwtToken)
+  const items = await getItemsPerUser(jwtToken)
 
   return {
     statusCode: 201,
@@ -21,7 +21,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       'Access-Control-Allow-Origin': '*'
     },
     body: JSON.stringify({
-      items: todos
+      items: items
     })
   }
 }
