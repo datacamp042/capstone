@@ -48,7 +48,7 @@ functions:
     events:
       - http:
           method: get
-          path: items
+          path: todos
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -62,7 +62,7 @@ functions:
     events:
       - http:
           method: post
-          path: items
+          path: todos
           cors: true
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
@@ -82,7 +82,7 @@ functions:
     events:
       - http:
           method: patch
-          path: items/{itemId}
+          path: todos/{itemId}
           cors: true
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
@@ -106,7 +106,7 @@ functions:
     events:
       - http:
           method: delete
-          path: items/{itemId}
+          path: todos/{itemId}
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -124,7 +124,7 @@ functions:
     events:
       - http:
           method: post
-          path: items/{itemId}/attachment
+          path: todos/{itemId}/attachment
           cors: true
           authorizer: Auth
     iamRoleStatements:
